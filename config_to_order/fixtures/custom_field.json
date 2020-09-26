@@ -216,7 +216,7 @@
   "doctype": "Custom Field",
   "dt": "BOM Item",
   "fieldname": "selection_condition",
-  "description":"Python expression, configuration doctype's field name is ready variable, e.g: harddisk == 'samsung'",
+  "description":"Python expression, current config doc field name as context is available, e.g: doc.harddisk == 'samsung'",
   "fieldtype": "Code",
   "insert_after": "column_break_11",
   "label": "Selection Condition",
