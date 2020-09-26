@@ -138,6 +138,7 @@ def get_configuration_result(bom_no, fetch_exploded, configuration_doctype, conf
             configuration_result.append('config_items', config_item )
     return configuration_result
 
+@frappe.whitelist()
 def get_configuration_fields(doctype=None, txt=None, searchfield=None, start=None, page_len=None, filters=None):
 	"""get relevant fields of the configuration doctype"""
 
@@ -152,7 +153,8 @@ def get_configuration_fields(doctype=None, txt=None, searchfield=None, start=Non
 		fields = [[f.fieldname, _(f.fieldname), _(f.label)] for f in meta.fields if (not field_types or f.fieldtype in field_types) and check(f)]
 
 	return fields
-	
+
+@frappe.whitelist()
 def get_configuration_docname(doctype=None, txt=None, searchfield=None, start=None, page_len=None, filters=None):
 	"""get relevant fields of the configuration doctype"""
 		
