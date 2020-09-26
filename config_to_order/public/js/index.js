@@ -14,6 +14,7 @@ frappe.ui.form.on('Configuration Result Item', configuration_result_item);
 
 frappe.ui.form.make_control = function (opts) {
 	if (opts.df.fieldtype =='Data' && opts.df.options==='custom query'){
+		opts.df.options='DocType';
 		opts.df.fieldtype='Link';
 		opts.df.ignore_link_validation= true;
 		opts.df.only_select = true;
