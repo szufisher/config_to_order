@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from . import __version__ as app_version
-import frappe
+import frappe as _frappe
 from frappe.utils import cstr, flt, getdate, comma_and, cint, nowdate, add_days
 
 app_name = "config_to_order"
@@ -172,7 +172,7 @@ doc_events = {
 # 	"frappe.desk.doctype.event.event.get_events": "config_to_order.event.get_events"
 # }
 
-from erpnext.manufacturing.doctype.bom import bom
+from erpnext.manufacturing.doctype.bom import bom as _bom
 				
 def get_bom_items_as_dict(bom, company, qty=1, fetch_exploded=1, fetch_scrap_items=0, include_non_stock_items=False, fetch_qty_in_stock_uom=True):
 	item_dict = {}
@@ -216,10 +216,10 @@ def get_bom_items_as_dict(bom, company, qty=1, fetch_exploded=1, fetch_scrap_ite
 				  bom_item.selection_condition, bom_item.item_from_configuration, bom_item.qty_from_configuration""",
 			groupby_columns = """, bom_item.operation""")
 
-		items = frappe.db.sql(query, { "parent": bom, "qty": qty, "bom": bom, "company": company }, as_dict=True)
+		items = _frappe.db.sql(query, { "parent": bom, "qty": qty, "bom": bom, "company": company }, as_dict=True)
 	elif fetch_scrap_items:
 		query = query.format(table="BOM Scrap Item", where_conditions="", select_columns=", bom_item.idx", is_stock_item=is_stock_item, qty_field="stock_qty", groupby_columns="")
-		items = frappe.db.sql(query, { "qty": qty, "bom": bom, "company": company }, as_dict=True)
+		items = _frappe.db.sql(query, { "qty": qty, "bom": bom, "company": company }, as_dict=True)
 	else:
 		query = query.format(table="BOM Item", where_conditions="", is_stock_item=is_stock_item,
 			qty_field="stock_qty" if fetch_qty_in_stock_uom else "qty",
@@ -227,7 +227,7 @@ def get_bom_items_as_dict(bom, company, qty=1, fetch_exploded=1, fetch_scrap_ite
 							 bom_item.operation, bom_item.include_item_in_manufacturing,
 							  bom_item.selection_condition, bom_item.item_from_configuration, bom_item.qty_from_configuration""",
 			groupby_columns = """, bom_item.operation""")
-		items = frappe.db.sql(query, { "qty": qty, "bom": bom, "company": company }, as_dict=True)
+		items = _frappe.db.sql(query, { "qty": qty, "bom": bom, "company": company }, as_dict=True)
 
 	for item in items:
 		key = (item.item_code)
@@ -242,13 +242,13 @@ def get_bom_items_as_dict(bom, company, qty=1, fetch_exploded=1, fetch_scrap_ite
 	for item, item_details in item_dict.items():
 		for d in [["Account", "expense_account", "stock_adjustment_account"],
 			["Cost Center", "cost_center", "cost_center"], ["Warehouse", "default_warehouse", ""]]:
-				company_in_record = frappe.db.get_value(d[0], item_details.get(d[1]), "company")
+				company_in_record = _frappe.db.get_value(d[0], item_details.get(d[1]), "company")
 				if not item_details.get(d[1]) or (company_in_record and company != company_in_record):
-					item_dict[item][d[1]] = frappe.get_cached_value('Company',  company,  d[2]) if d[2] else None
+					item_dict[item][d[1]] = _frappe.get_cached_value('Company',  company,  d[2]) if d[2] else None
 
 	return item_dict				
 
-bom.get_bom_items_as_dict = get_bom_items_as_dict
+_bom.get_bom_items_as_dict = get_bom_items_as_dict
 
 from erpnext.manufacturing.doctype.bom.bom import BOM
 
@@ -259,7 +259,7 @@ def get_exploded_items(self):
 		if d.bom_no:
 			self.get_child_exploded_items(d.bom_no, d.stock_qty)
 		else:
-			self.add_to_cur_exploded_items(frappe._dict({
+			self.add_to_cur_exploded_items(_frappe._dict({
 				'item_code'		: d.item_code,
 				'item_name'		: d.item_name,
 				'operation'		: d.operation,
@@ -282,7 +282,7 @@ BOM.get_exploded_items = get_exploded_items
 def get_child_exploded_items(self, bom_no, stock_qty):
 	""" Add all items from Flat BOM of child BOM"""
 	# Did not use qty_consumed_per_unit in the query, as it leads to rounding loss
-	child_fb_items = frappe.db.sql("""select bom_item.item_code, bom_item.item_name,
+	child_fb_items = _frappe.db.sql("""select bom_item.item_code, bom_item.item_name,
 			bom_item.description, bom_item.source_warehouse, bom_item.operation,
 			bom_item.stock_uom, bom_item.stock_qty, bom_item.rate, bom_item.include_item_in_manufacturing,
 			bom_item.stock_qty / ifnull(bom.quantity, 1) as qty_consumed_per_unit, bom_item.selection_condition,
@@ -291,7 +291,7 @@ def get_child_exploded_items(self, bom_no, stock_qty):
 			where bom_item.parent = bom.name and bom.name = %s and bom.docstatus = 1""", bom_no, as_dict=1)
 
 	for d in child_fb_items:
-		self.add_to_cur_exploded_items(frappe._dict({
+		self.add_to_cur_exploded_items(_frappe._dict({
 			'item_code'			: d['item_code'],
 			'item_name'				: d['item_name'],
 			'source_warehou'		: d['source_warehouse'],
@@ -322,7 +322,7 @@ def set_required_items(self, reset_only_qty=False):
 		elif item_from_configuration:
 			ret = configuration.get(item_from_configuration) == bom_item.item_code
 		elif selection_condition:
-			ret = frappe.safe_eval(selection_condition, None, {'doc': configuration})
+			ret = _frappe.safe_eval(selection_condition, None, {'doc': configuration})
 
 		return ret
 
@@ -339,8 +339,8 @@ def set_required_items(self, reset_only_qty=False):
 	if self.bom_no and self.qty:
 		item_dict = get_bom_items_as_dict(self.bom_no, self.company, qty=self.qty,
 			fetch_exploded = self.use_multi_level_bom)
-		soi = frappe.get_doc('Sales Order Item', self.sales_order_item) if self.sales_order_item else None
-		configuration = frappe.get_doc(soi.configuration_doctype, soi.configuration_docname) if soi and soi.configuration_docname else None
+		soi = _frappe.get_doc('Sales Order Item', self.sales_order_item) if self.sales_order_item else None
+		configuration = _frappe.get_doc(soi.configuration_doctype, soi.configuration_docname) if soi and soi.configuration_docname else None
 
 		if reset_only_qty:
 			if not configuration:
