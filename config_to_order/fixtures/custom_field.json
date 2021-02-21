@@ -112,8 +112,7 @@
   "insert_after": "configuration",
   "label": "Item From Configuration",
   "modified": "2020-02-23 15:38:05.154543",
-  "name": "BOM Explosion Item-item_from_configuration",
-  "options": "DocField"
+  "name": "BOM Explosion Item-item_from_configuration"
  },
  {
   "collapsible": 1,
@@ -136,7 +135,6 @@
   "label": "Qty From Configuration",
   "modified": "2020-02-23 15:38:37.217268",
   "name": "BOM Explosion Item-qty_from_configuration",
-  "options": "DocField",
   "translatable": 1
  },
  {
@@ -157,8 +155,7 @@
   "insert_after": "qty_from_configuration",
   "label": "Desc From Configuration",
   "modified": "2020-02-27 19:44:06.196260",
-  "name": "BOM Explosion Item-desc_from_configuration",
-  "options": "custom query"
+  "name": "BOM Explosion Item-desc_from_configuration"
  },
  {
   "doctype": "Custom Field",
@@ -168,8 +165,7 @@
   "insert_after": "configuration",
   "label": "Item From Configuration",
   "modified": "2020-02-23 10:08:09.109902",
-  "name": "BOM Item-item_from_configuration",
-  "options": "custom query"
+  "name": "BOM Item-item_from_configuration"
  },
  {
   "doctype": "Custom Field",
@@ -189,8 +185,7 @@
   "insert_after": "item_from_configuration",
   "label": "Qty From Configuration",
   "modified": "2020-02-23 10:08:09.457904",
-  "name": "BOM Item-qty_from_configuration",
-  "options": "custom query"
+  "name": "BOM Item-qty_from_configuration"
  },
  {
   "doctype": "Custom Field",
@@ -200,8 +195,7 @@
   "insert_after": "qty_from_configuration",
   "label": "Desc From Configuration",
   "modified": "2020-02-27 19:31:28.685090",
-  "name": "BOM Item-desc_from_configuration",
-  "options": "custom query"
+  "name": "BOM Item-desc_from_configuration"
  },
  {
   "doctype": "Custom Field",
