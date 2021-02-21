@@ -14,7 +14,7 @@ frappe.ui.form.on('Configuration Result Item', configuration_result_item);
 
 frappe.ui.form.make_control = function (opts) {
 	const fields = ['desc_from_configuration','item_from_configuration','qty_from_configuration','desc_from_configuration'];
-	if (opts.df.fieldtype =='Data' && in_list(fields,opts.df.name)){
+	if (opts.df.fieldtype =='Data' && in_list(fields,opts.df.fieldname)){
 		opts.df.options='DocType';
 		opts.df.fieldtype='Link';
 		opts.df.ignore_link_validation= true;
